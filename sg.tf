@@ -12,7 +12,18 @@ resource "aws_security_group_rule" "ssh_access_from_my_ip" {
   from_port   = 22
   to_port     = 22
   protocol    = "tcp"
-  cidr_blocks = ["${local.my_ip}/32"]
+  cidr_blocks = ["${local.my_ip}"]
+}
+
+resource "aws_security_group_rule" "http_access_from_my_ip" {
+  security_group_id = aws_security_group.my_host.id
+  description       = "Allow connecting from my ip to HTTP"
+
+  type        = "ingress"
+  from_port   = 8080
+  to_port     = 8080
+  protocol    = "tcp"
+  cidr_blocks = ["${local.my_ip}"]
 }
 
 resource "aws_security_group_rule" "access_from_alb" {

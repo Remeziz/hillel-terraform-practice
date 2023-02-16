@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "hillel-devops-terraform-state"
+    bucket = "hillel-devops-terraform-state-1"
     key    = "lesson25/terraform/terraform.tfstate"
     region = "us-east-1"
 
@@ -16,7 +16,7 @@ module "alb" {
   source = "./modules/alb"
 
   name           = "react-alb"
-  my_ip          = local.my_ip
+  my_ip          = "${local.my_ip}"
   instance_ids   = [for host in module.my_host : host.instance_id]
   instance_sg_id = aws_security_group.my_host.id
 }
@@ -30,35 +30,36 @@ module "my_host" {
       "root_block_size" : 10,
       "root_volume_type" : "gp3"
     },
-    "second_instance" : {
-      "instance_type" : "t2.micro",
-      "root_block_size" : 10,
-      "root_volume_type" : "gp3"
-    },
+    # "second_instance" : {
+    #   "instance_type" : "t2.micro",
+    #   "root_block_size" : 10,
+    #   "root_volume_type" : "gp3"
+    # },
   }
-
-  instance_name     = each.key
-  instance_type     = each.value.instance_type
-  root_block_size   = each.value.root_block_size
-  root_volume_type  = lookup(each.value, "root_volume_type", "standard")
-  instance_profile  = aws_iam_instance_profile.ecr_read_only.name
-  security_group_id = aws_security_group.my_host.id
-
+  
+  instance_name      = each.key
+  instance_type      = each.value.instance_type
+  root_block_size    = each.value.root_block_size
+  root_volume_type   = lookup(each.value, "root_volume_type", "standard")
+  instance_profile   = aws_iam_instance_profile.ecr_read_only.name
+  security_group_id  = aws_security_group.my_host.id
+  aws_ecr_repository_url = aws_ecr_repository.react-app.repository_url
+  
   depends_on = [aws_ecr_repository.react-app]
 }
 
 resource "aws_ecr_repository" "react-app" {
   name         = "react-realworld-app"
   force_delete = true
-
-  provisioner "local-exec" {
+  
+ provisioner "local-exec" {
     command = <<EOF
 rm -rf /tmp/app
 git clone https://github.com/vladyslav-tripatkhi/react-redux-realworld-example-app.git /tmp/app
 cd /tmp/app
-docker build --platform linux/amd64 -t 507676015690.dkr.ecr.us-east-1.amazonaws.com/react-realworld-app:test .
-aws ecr get-login-password | docker login --username AWS --password-stdin 507676015690.dkr.ecr.us-east-1.amazonaws.com
-docker push 507676015690.dkr.ecr.us-east-1.amazonaws.com/react-realworld-app:test
+docker build --platform linux/amd64 -t ${aws_ecr_repository.react-app.repository_url}:test .
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.react-app.repository_url}
+docker push ${aws_ecr_repository.react-app.repository_url}:test
     EOF 
   }
 }
