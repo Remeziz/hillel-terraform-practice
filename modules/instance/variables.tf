@@ -30,3 +30,8 @@ variable "instance_profile" {
 variable "security_group_id" {
   type = string
 }
+
+variable "aws_ecr_repository_url" {
+  type = string
+}
+
