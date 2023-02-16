@@ -1,3 +1,7 @@
+provider "aws" {
+    region = "us-east-1"
+}
+
 resource "aws_alb" "this" {
   name               = var.name
   internal           = false
@@ -9,7 +13,7 @@ resource "aws_alb" "this" {
 resource "aws_lb_target_group" "this" {
   vpc_id   = data.aws_vpc.this.id
   name     = "${var.name}-target-group"
-  port     = 8080
+  port     = "${var.port_tg}"
   protocol = "HTTP"
 
   health_check {
@@ -25,13 +29,13 @@ resource "aws_lb_target_group_attachment" "this" {
 
   target_group_arn = aws_lb_target_group.this.arn
   target_id        = var.instance_ids[count.index]
-  port             = 8080
+  port             = "${var.port_tg}"
 }
 
 resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_alb.this.arn
   protocol          = "HTTP"
-  port              = 80
+  port              = "${var.listen_alb_port}"
 
   default_action {
     # type = "fixed-response"
@@ -44,5 +48,30 @@ resource "aws_alb_listener" "this" {
 
     type             = "forward"
     target_group_arn = aws_lb_target_group.this.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "ping-pong" {
+  listener_arn = aws_alb_listener.this.arn
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "ping"
+      status_code  = "200"
+    }
+  }
+
+  condition {
+    query_string {
+      key   = "ping"
+      value = "pong"
+    }
+
+    query_string {
+      value = "bar"
+    }
   }
 }

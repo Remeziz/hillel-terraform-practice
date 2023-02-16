@@ -9,10 +9,11 @@ resource "aws_security_group_rule" "access_from_my_ip" {
   description       = "Allow connecting from my ip"
 
   type        = "ingress"
-  from_port   = 80
-  to_port     = 80
+  from_port   = "${var.listen_alb_port}"
+  to_port     = "${var.listen_alb_port}"
   protocol    = "tcp"
-  cidr_blocks = ["${var.my_ip}/32"]
+  cidr_blocks = ["${var.my_ip}"]
+  
 }
 
 resource "aws_security_group_rule" "egress_anywhere" {
@@ -20,9 +21,9 @@ resource "aws_security_group_rule" "egress_anywhere" {
   description       = "Allow outbound traffic"
 
   type      = "egress"
-  from_port = 8080
-  to_port   = 8080
+  from_port = "${var.port_tg}"
+  to_port   = "${var.port_tg}"
   protocol  = "all"
-  # cidr_blocks = ["0.0.0.0/0"]
+  
   source_security_group_id = var.instance_sg_id
 }
