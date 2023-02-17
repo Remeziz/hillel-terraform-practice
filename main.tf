@@ -37,12 +37,12 @@ module "my_host" {
     # },
   }
   
-  instance_name      = each.key
-  instance_type      = each.value.instance_type
-  root_block_size    = each.value.root_block_size
-  root_volume_type   = lookup(each.value, "root_volume_type", "standard")
-  instance_profile   = aws_iam_instance_profile.ecr_read_only.name
-  security_group_id  = aws_security_group.my_host.id
+  instance_name          = each.key
+  instance_type          = each.value.instance_type
+  root_block_size        = each.value.root_block_size
+  root_volume_type       = lookup(each.value, "root_volume_type", "standard")
+  instance_profile       = aws_iam_instance_profile.ecr_read_only.name
+  security_group_id      = aws_security_group.my_host.id
   aws_ecr_repository_url = aws_ecr_repository.react-app.repository_url
   
   depends_on = [aws_ecr_repository.react-app]
