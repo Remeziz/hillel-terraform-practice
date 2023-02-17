@@ -25,7 +25,3 @@ data "aws_subnets" "this" {
     values = data.aws_ec2_instance_type_offerings.this.locations
   }
 }
-
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-}
