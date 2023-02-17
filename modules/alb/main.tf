@@ -13,7 +13,7 @@ resource "aws_alb" "this" {
 resource "aws_lb_target_group" "this" {
   vpc_id   = data.aws_vpc.this.id
   name     = "${var.name}-target-group"
-  port     = "${var.port_tg}"
+  port     = "${var.from_port_tg}"
   protocol = "HTTP"
 
   health_check {
@@ -29,13 +29,13 @@ resource "aws_lb_target_group_attachment" "this" {
 
   target_group_arn = aws_lb_target_group.this.arn
   target_id        = var.instance_ids[count.index]
-  port             = "${var.port_tg}"
+  port             = "${var.to_port_tg}"
 }
 
 resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_alb.this.arn
   protocol          = "HTTP"
-  port              = "${var.listen_alb_port}"
+  port              = "${var.from_listen_alb_port}"
 
   default_action {
     # type = "fixed-response"

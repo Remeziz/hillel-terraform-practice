@@ -22,14 +22,26 @@ variable "my_ip" {
   type = string
 }
 
-variable "port_tg" {
+variable "from_port_tg" {
   type        = string
   default     = "8080"
-  description = "port for target group"
+  description = "listen port for target group"
 }
 
-variable "listen_alb_port" {
+variable "to_port_tg" {
+  type        = string
+  default     = "8080"
+  description = "to port for target group"
+}
+
+variable "from_listen_alb_port" {
   type        = string
   default     = "80"
-  description = "alb listen port"
+  description = "from alb listen port"
+}
+
+variable "to_listen_alb_port" {
+  type        = string
+  default     = "80"
+  description = "to alb listen port"
 }
