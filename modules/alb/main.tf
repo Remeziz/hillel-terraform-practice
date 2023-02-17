@@ -38,14 +38,6 @@ resource "aws_alb_listener" "this" {
   port              = "${var.from_listen_alb_port}"
 
   default_action {
-    # type = "fixed-response"
-
-    # fixed_response {
-    #     content_type = "text/plain"
-    #     message_body = "{\"message\": \"Hello from Terraform\"}"
-    #     status_code  = "200"
-    # }
-
     type             = "forward"
     target_group_arn = aws_lb_target_group.this.arn
   }
@@ -53,25 +45,20 @@ resource "aws_alb_listener" "this" {
 
 resource "aws_lb_listener_rule" "ping-pong" {
   listener_arn = aws_alb_listener.this.arn
-
+         
   action {
     type = "fixed-response"
 
     fixed_response {
       content_type = "text/plain"
-      message_body = "ping"
+      message_body = "pong"
       status_code  = "200"
     }
   }
 
   condition {
-    query_string {
-      key   = "ping"
-      value = "pong"
-    }
-
-    query_string {
-      value = "bar"
+    path_pattern {
+      values = ["/ping"]
     }
   }
 }
