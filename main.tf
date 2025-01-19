@@ -9,7 +9,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-1"
 }
 
 module "alb" {
@@ -58,7 +58,7 @@ rm -rf /tmp/app
 git clone https://github.com/vladyslav-tripatkhi/react-redux-realworld-example-app.git /tmp/app
 cd /tmp/app
 docker build --platform linux/amd64 -t ${aws_ecr_repository.react-app.repository_url}:test .
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.react-app.repository_url}
+aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.react-app.repository_url}
 docker push ${aws_ecr_repository.react-app.repository_url}:test
     EOF 
   }
