@@ -55,7 +55,7 @@ resource "null_resource" "this" {
  depends_on = [aws_ecr_repository.react-app]
  provisioner "local-exec" {
     command = <<EOF
-rm -rf /tmp/app
+sudo rm -rf /tmp/app
 sudo yum install git
 sudo yum install docker
 sudo systemctl start docker
