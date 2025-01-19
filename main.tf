@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = "hillel-devops-terraform-state-1"
+    bucket = "hillel-devops-terraform-state-2"
     key    = "lesson25/terraform/terraform.tfstate"
-    region = "us-east-1"
+    region = "us-west-1"
 
     dynamodb_table = "hillel-devops-terraform-state-lock"
   }
