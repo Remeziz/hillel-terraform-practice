@@ -14,7 +14,7 @@ yum install -y docker
 systemctl enable docker
 systemctl start docker
 usermod -aG docker ec2-user
-aws ecr get-login-password --region=us-east-1 | docker login --username AWS --password-stdin "${var.aws_ecr_repository_url}"
+aws ecr get-login-password --region=us-west-1 | docker login --username AWS --password-stdin "${var.aws_ecr_repository_url}"
 docker run -d --name app -p 8080:80 "${var.aws_ecr_repository_url}":test
   EOF
   
