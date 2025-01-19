@@ -5,7 +5,6 @@ FROM gitpod/workspace-full
 # (в Gitpod/workspace-full обычно apt-get есть, но lsb_release/gpg может отсутствовать)
 RUN sudo apt-get update && \
     sudo apt-get install -y gnupg lsb-release \ 
-    && sudo apt-get install -y awscli \
 # Теперь можно добавить репозиторий HashiCorp
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg \
     && sudo install -o root -g root -m 644 hashicorp.gpg /usr/share/keyrings/ \
