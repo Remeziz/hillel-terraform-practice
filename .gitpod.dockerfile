@@ -6,8 +6,8 @@ FROM gitpod/workspace-full
 RUN sudo apt-get update && \
     sudo apt-get install -y gnupg lsb-release \ 
     && sudo apt-get install -y awscli \
-    && sudo rm -rf /var/lib/apt/lists/* \ 
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg \
+# Теперь можно добавить репозиторий HashiCorp
+RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor > hashicorp.gpg \
     && sudo install -o root -g root -m 644 hashicorp.gpg /usr/share/keyrings/ \
     && rm -f hashicorp.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com \
