@@ -1,10 +1,10 @@
 terraform {
   backend "s3" {
-    bucket = "hillel-devops-terraform-state-2"
-    key    = "lesson25/terraform/terraform.tfstate"
-    region = "us-west-1"
-
-    dynamodb_table = "hillel-devops-terraform-state-lock"
+    bucket         = "hillel-devops-terraform-state-2"
+    key            = "lesson25/terraform/terraform.tfstate"
+    region         = "us-west-1"
+    encrypt        = true
+    dynamodb_table = "my-terraform-lock-table"
   }
 }
 
@@ -44,14 +44,15 @@ module "my_host" {
   instance_profile       = aws_iam_instance_profile.ecr_read_only.name
   security_group_id      = aws_security_group.my_host.id
   aws_ecr_repository_url = aws_ecr_repository.react-app.repository_url
-  
-  depends_on = [aws_ecr_repository.react-app]
 }
 
 resource "aws_ecr_repository" "react-app" {
   name         = "react-realworld-app"
   force_delete = true
-  
+}
+
+resource "null_resource" "this" {
+ depends_on = [aws_ecr_repository.react-app]
  provisioner "local-exec" {
     command = <<EOF
 rm -rf /tmp/app
