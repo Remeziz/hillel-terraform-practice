@@ -55,6 +55,8 @@ resource "null_resource" "this" {
  depends_on = [aws_ecr_repository.react-app]
  provisioner "local-exec" {
     command = <<EOF
+yum update -y
+yum install -y awscli
 rm -rf /tmp/app
 git clone https://github.com/vladyslav-tripatkhi/react-redux-realworld-example-app.git /tmp/app
 cd /tmp/app

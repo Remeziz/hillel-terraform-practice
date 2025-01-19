@@ -9,7 +9,9 @@ resource "aws_instance" "this" {
   }
 
   user_data     = <<EOF
-#!/bin/bash 
+#!/bin/bash
+yum update -y
+yum install -y awscli
 yum install -y docker
 systemctl enable docker
 systemctl start docker
