@@ -23,6 +23,14 @@ resource "aws_iam_role_policy_attachment" "ecr_read_only" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
+resource "aws_iam_role_policy_attachment" "ecr_push_only" {
+  role =  aws_iam_role.ecr_read_only.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+}
+
+
+
+
 resource "aws_iam_instance_profile" "ecr_read_only" {
   name = "ecr-read-only"
   role = aws_iam_role.ecr_read_only.name

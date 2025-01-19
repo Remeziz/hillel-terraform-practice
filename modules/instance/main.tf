@@ -10,14 +10,13 @@ resource "aws_instance" "this" {
 
   user_data     = <<EOF
 #!/bin/bash
-yum update -y
-yum install -y awscli
-yum install -y docker
-systemctl enable docker
-systemctl start docker
-usermod -aG docker ec2-user
-aws ecr get-login-password --region=us-west-1 | docker login --username AWS --password-stdin "${var.aws_ecr_repository_url}"
-docker run -d --name app -p 8080:80 "${var.aws_ecr_repository_url}":test
+sudo yum update -y
+sudo yum install -y docker
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker ec2-user
+sudo aws ecr get-login-password --region=us-west-1 | docker login --username AWS --password-stdin "${var.aws_ecr_repository_url}"
+sudo docker run -d --name app -p 8080:80 "${var.aws_ecr_repository_url}":test
   EOF
   
   iam_instance_profile   = var.instance_profile

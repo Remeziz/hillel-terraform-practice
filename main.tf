@@ -55,14 +55,15 @@ resource "null_resource" "this" {
  depends_on = [aws_ecr_repository.react-app]
  provisioner "local-exec" {
     command = <<EOF
-yum update -y
-yum install -y awscli
 rm -rf /tmp/app
-git clone https://github.com/vladyslav-tripatkhi/react-redux-realworld-example-app.git /tmp/app
+sudo yum install git
+sudo yum install docker
+sudo systemctl start docker
+sudo git clone https://github.com/vladyslav-tripatkhi/react-redux-realworld-example-app.git /tmp/app
 cd /tmp/app
-docker build --platform linux/amd64 -t ${aws_ecr_repository.react-app.repository_url}:test .
-aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.react-app.repository_url}
-docker push ${aws_ecr_repository.react-app.repository_url}:test
+sudo docker build --platform linux/amd64 -t ${aws_ecr_repository.react-app.repository_url}:test .
+sudo aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.react-app.repository_url}
+sudo docker push ${aws_ecr_repository.react-app.repository_url}:test
     EOF 
   }
 }
